@@ -1,0 +1,23 @@
+trigger:
+- main
+
+# 1. Change the pool to use your local agent
+pool:
+  name: 'Default' 
+
+stages:
+- stage: Deploy_Infra
+  jobs:
+  - job: BicepDeploy
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'YourServiceConnection'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'DevOps-Project-RG'
+        location: 'East US'
+        templateLocation: 'Linked artifact'
+        # 2. Use the system variable to point exactly to your file
+        csmFile: '$(Build.SourcesDirectory)/main.bicep'
+        deploymentMode: 'Incremental'
